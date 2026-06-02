@@ -1,0 +1,15 @@
+# Segredos — NUNCA subir
+.env
+*.env
+!.env.example
+
+# Ambiente do uv / Python
+.venv/
+__pycache__/
+*.pyc
+
+# dbt
+valsa/target/
+valsa/dbt_packages/
+valsa/logs/
+logs/
