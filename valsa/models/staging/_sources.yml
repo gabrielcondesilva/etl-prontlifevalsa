@@ -1,0 +1,37 @@
+version: 2
+
+sources:
+  - name: prontlife
+    schema: prontlife_raw
+    tables:
+      - name: patient
+      - name: encounter
+      - name: appointment
+      - name: practitioner
+      - name: location
+      - name: condition
+      - name: condition_diagnosis
+      - name: allergyintolerance
+      - name: familymemberhistory
+      - name: procedure
+      - name: observation
+      - name: observation_complaint
+      - name: observation_history_of_present_illness
+      - name: riskassessment
+      - name: servicerequest
+      - name: coverage
+      - name: healthinsurance
+      - name: healthinsuranceplan
+      - name: medication
+      - name: medicationrequest
+      - name: medicationstatement
+      - name: nutritionorder
+      - name: immunization
+      - name: documentreference
+      - name: customcareplan
+      - name: customcareplanaction
+      - name: customepisodeofcare
+      - name: customplandefinition
+      - name: questionnaire
+      - name: questionnaire_response
+      - name: userparameter_mandatory_fields
