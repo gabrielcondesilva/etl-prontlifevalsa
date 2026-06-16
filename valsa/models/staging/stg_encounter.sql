@@ -41,11 +41,9 @@ renamed as (
         data -> 'type' -> 0 -> 'coding' -> 0 ->> 'code'                   as type_code,
         data -> 'type' -> 0 -> 'coding' -> 0 ->> 'display'                as type_display,
 
-        -- período (convertido para horário de Brasília)
-        (data -> 'period' ->> 'start')::timestamptz
-            at time zone 'America/Sao_Paulo'                               as period_start,
-        (data -> 'period' ->> 'end')::timestamptz
-            at time zone 'America/Sao_Paulo'                               as period_end,
+        -- período
+        (data -> 'period' ->> 'start')::timestamptz                        as period_start,
+        (data -> 'period' ->> 'end')::timestamptz                          as period_end,
 
         -- extensões
         (
