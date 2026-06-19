@@ -42,3 +42,45 @@ models:
 
       - name: estado
         description: "Sigla do estado de residência do paciente (ex: RJ, SP)"
+
+  - name: dim_profissionais
+    description: >
+      Dimensão de profissionais de saúde. Aplica "mais novo ganha" sobre
+      o histórico de versões de cada profissional na staging. Inclui dados
+      cadastrais, contato e atuação profissional (especialidade, conselho).
+    columns:
+      - name: id_profissional
+        description: "Identificador único do profissional (chave primária da dimensão)"
+        tests:
+          - unique
+          - not_null
+
+      - name: nome_completo
+        description: "Nome completo do profissional, capitalizado corretamente"
+
+      - name: sexo
+        description: "Sexo biológico do profissional, traduzido para português"
+
+      - name: data_nascimento
+        description: "Data de nascimento do profissional"
+
+      - name: idade
+        description: "Idade do profissional em anos completos"
+
+      - name: cpf
+        description: "CPF do profissional, sem espaços extras"
+
+      - name: telefone
+        description: "Telefone de contato do profissional"
+
+      - name: email
+        description: "Email do profissional, normalizado em minúsculo"
+
+      - name: especialidade
+        description: "Especialidade médica/profissional declarada"
+
+      - name: numero_conselho
+        description: "Número de registro no conselho profissional (CRM, COREN, etc.)"
+
+      - name: tipo_conselho
+        description: "Tipo do conselho profissional (CRM, COREN, CREFITO, etc.)"
