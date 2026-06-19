@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: dim_pacientes
+    description: >
+      Dimensão de pacientes. Aplica a regra "mais novo ganha" sobre o histórico
+      de versões de cada paciente na staging, mantendo apenas o registro mais
+      recente por delivery_date. Inclui dados cadastrais, contato e localização.
+    columns:
+      - name: id_paciente
+        description: "Identificador único do paciente (chave primária da dimensão)"
+        tests:
+          - unique
+          - not_null
+
+      - name: nome_completo
+        description: "Nome completo do paciente, capitalizado corretamente (preposições em minúsculo)"
+
+      - name: sexo
+        description: "Sexo biológico do paciente, traduzido para português (Masculino/Feminino)"
+
+      - name: data_nascimento
+        description: "Data de nascimento do paciente"
+
+      - name: idade
+        description: "Idade do paciente em anos completos, calculada a partir da data_nascimento"
+
+      - name: cpf
+        description: "CPF do paciente, sem espaços extras (trim aplicado)"
+
+      - name: telefone_celular
+        description: "Telefone celular de contato do paciente"
+
+      - name: email
+        description: "Email do paciente, normalizado em minúsculo"
+
+      - name: bairro
+        description: "Bairro de residência do paciente, capitalizado"
+
+      - name: cidade
+        description: "Cidade de residência do paciente, capitalizada"
+
+      - name: estado
+        description: "Sigla do estado de residência do paciente (ex: RJ, SP)"
