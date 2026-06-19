@@ -309,3 +309,54 @@ models:
 
       - name: observacao
         description: "Observações registradas sobre o episódio"
+  - name: fato_diagnosticos_hpp
+    description: >
+      Fato de diagnósticos/HPP (histórico pessoal de doenças). Aplica
+      "mais novo ganha" sobre o histórico de versões de cada diagnóstico
+      na staging. Traduz categoria, gravidade, status clínico e status
+      de verificação para português.
+    columns:
+      - name: id_diagnostico
+        description: "Identificador único do diagnóstico (chave primária do fato)"
+        tests:
+          - unique
+          - not_null
+
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+
+      - name: id_atendimento
+        description: "Referência ao atendimento onde o diagnóstico foi registrado (fato_atendimentos)"
+
+      - name: id_profissional
+        description: "Referência ao profissional que registrou o diagnóstico (dim_profissionais)"
+
+      - name: nome_profissional
+        description: "Nome do profissional que registrou o diagnóstico"
+
+      - name: nome_diagnostico
+        description: "Nome/descrição do diagnóstico"
+
+      - name: codigo_cid10
+        description: "Código CID-10 do diagnóstico"
+
+      - name: descricao_cid10
+        description: "Descrição oficial do código CID-10"
+
+      - name: categoria
+        description: "Categoria do registro (Registro de Doença / Diagnóstico em Atendimento), traduzida"
+
+      - name: gravidade
+        description: "Gravidade da condição (Leve/Moderada/Severa), traduzida"
+
+      - name: status_clinico
+        description: "Status clínico da condição, traduzido (Ativa/Inativa/Reincidência/Recaída/Remissão/Curada)"
+
+      - name: status_verificacao
+        description: "Status de verificação do diagnóstico, traduzido (Confirmado/Não confirmado/Provisório/Erro)"
+
+      - name: observacao
+        description: "Observações registradas sobre o diagnóstico"
+
+      - name: data_registro
+        description: "Data e hora de registro do diagnóstico, no horário de Brasília"
