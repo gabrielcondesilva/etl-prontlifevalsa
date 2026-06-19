@@ -84,3 +84,36 @@ models:
 
       - name: tipo_conselho
         description: "Tipo do conselho profissional (CRM, COREN, CREFITO, etc.)"
+  - name: dim_unidades
+    description: >
+      Dimensão de unidades de saúde. Aplica "mais novo ganha" sobre o
+      histórico de versões de cada unidade na staging. Inclui identificação,
+      contato e localização. Corrige problemas de encoding HTML herdados
+      de cadastros legados.
+    columns:
+      - name: id_unidade
+        description: "Identificador único da unidade (chave primária da dimensão)"
+        tests:
+          - unique
+          - not_null
+
+      - name: nome_unidade
+        description: "Nome da unidade de saúde, com encoding HTML corrigido (não capitalizado, pois pode conter siglas e marcadores como [LEGADO])"
+
+      - name: status
+        description: "Status da unidade, traduzido para português (Ativo/Suspenso/Inativo)"
+
+      - name: telefone
+        description: "Telefone de contato da unidade"
+
+      - name: endereco
+        description: "Endereço completo da unidade em texto"
+
+      - name: bairro
+        description: "Bairro onde está localizada a unidade, capitalizado"
+
+      - name: cidade
+        description: "Cidade onde está localizada a unidade, capitalizada"
+
+      - name: estado
+        description: "Sigla do estado onde está localizada a unidade"
