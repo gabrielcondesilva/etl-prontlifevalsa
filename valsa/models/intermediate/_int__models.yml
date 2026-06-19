@@ -165,3 +165,63 @@ models:
 
       - name: duracao_minutos
         description: "Duração do atendimento em minutos, calculada a partir de data_inicio e data_fim"
+  - name: fato_agendamentos
+    description: >
+      Fato de agendamentos. Aplica "mais novo ganha" sobre o histórico de
+      versões de cada agendamento na staging — um agendamento pode ser
+      remarcado várias vezes antes de se concretizar, então a versão mais
+      recente reflete o estado final (data efetiva e status atual).
+    columns:
+      - name: id_agendamento
+        description: "Identificador único do agendamento (chave primária do fato)"
+        tests:
+          - unique
+          - not_null
+
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+
+      - name: id_unidade
+        description: "Referência à unidade de saúde (dim_unidades)"
+
+      - name: id_profissional
+        description: "Referência ao profissional principal (dim_profissionais)"
+
+      - name: id_profissional_secundario
+        description: "Referência ao profissional secundário, quando houver (dim_profissionais)"
+
+      - name: id_convenio
+        description: "Referência ao convênio utilizado, quando houver"
+
+      - name: status
+        description: "Status do agendamento, traduzido para português"
+
+      - name: data_inicio
+        description: "Data e hora de início do agendamento (versão final), no horário de Brasília"
+
+      - name: data_fim
+        description: "Data e hora de término do agendamento (versão final), no horário de Brasília"
+
+      - name: duracao_minutos
+        description: "Duração planejada do agendamento em minutos"
+
+      - name: tipo_agendamento
+        description: "Tipo/motivo do agendamento (ex: Consulta de Rotina)"
+
+      - name: tipo_servico
+        description: "Serviço associado ao agendamento (ex: Melhor Idade - Visita Médica)"
+
+      - name: motivo_cancelamento
+        description: "Motivo do cancelamento, quando aplicável"
+
+      - name: observacao
+        description: "Observações/comentários registrados no agendamento"
+
+      - name: prioridade
+        description: "Nível de prioridade do agendamento"
+
+      - name: tipo_presenca
+        description: "Modalidade de atendimento (Presencial, Teleconsulta, etc.)"
+
+      - name: status_atendimento
+        description: "Status detalhado do atendimento associado ao agendamento"
