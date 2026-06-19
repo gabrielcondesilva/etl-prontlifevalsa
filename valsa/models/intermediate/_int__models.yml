@@ -264,3 +264,48 @@ models:
 
       - name: data_fim_vigencia
         description: "Data de fim da vigência do plano"
+  - name: fato_programas
+    description: >
+      Fato de episódios de cuidado (vínculo paciente-programa de saúde).
+      Aplica três camadas de tratamento: normalização do nome do programa
+      (corrige inconsistência de capitalização na fonte), "mais novo ganha"
+      por episode_of_care_id, e deduplicação por chave de negócio
+      (paciente + programa + data de admissão) para corrigir um bug
+      conhecido da Prontlife que gera múltiplos episode_of_care_id para
+      o mesmo vínculo lógico.
+    columns:
+      - name: id_episodio
+        description: "Identificador único do episódio de cuidado (chave primária do fato)"
+        tests:
+          - unique
+          - not_null
+
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+
+      - name: nome_programa
+        description: "Nome do programa de saúde, normalizado (capitalização padronizada)"
+
+      - name: id_gestor
+        description: "Referência ao profissional gestor do caso (dim_profissionais)"
+
+      - name: nome_gestor
+        description: "Nome do gestor do caso"
+
+      - name: papel_gestor
+        description: "Papel/função do gestor (ex: Gestor de Enfermagem)"
+
+      - name: status
+        description: "Status do episódio, traduzido para português (Ativo/Inativo)"
+
+      - name: data_admissao
+        description: "Data de admissão do paciente no programa, no horário de Brasília"
+
+      - name: data_fim_prevista
+        description: "Data de fim prevista do acompanhamento, no horário de Brasília"
+
+      - name: data_inativacao
+        description: "Data e hora em que o episódio foi efetivamente inativado, no horário de Brasília"
+
+      - name: observacao
+        description: "Observações registradas sobre o episódio"
