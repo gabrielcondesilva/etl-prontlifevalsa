@@ -382,3 +382,42 @@ models:
         description: "Observação registrada"
       - name: data_registro
         description: "Data e hora de registro, horário de Brasília"
+  - name: fato_exame_fisico
+    description: >
+      Fato de medidas do exame físico (sinais vitais e antropometria).
+      Aplica "mais novo ganha" por observation_id. Nome do registrante
+      é limpo (CRM/CREFITO removido quando colado ao nome).
+    columns:
+      - name: id_medicao
+        description: "Identificador único da medição (chave primária do fato)"
+        tests:
+          - unique
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos)"
+      - name: id_registrante
+        description: "ID de quem registrou a medição (profissional ou paciente)"
+      - name: tipo_registrante
+        description: "Tipo do registrante: Profissional ou Paciente"
+      - name: nome_registrante
+        description: "Nome de quem registrou a medição, sem registro profissional colado"
+      - name: nome_exame
+        description: "Nome do exame/medida, traduzido para português"
+      - name: valor
+        description: "Valor da medida simples (peso, altura, FC, etc.)"
+      - name: unidade
+        description: "Unidade do valor simples"
+      - name: pressao_sistolica
+        description: "Pressão sistólica, quando a medida é pressão arterial"
+      - name: pressao_diastolica
+        description: "Pressão diastólica, quando a medida é pressão arterial"
+      - name: pressao_media
+        description: "Pressão arterial média, quando disponível"
+      - name: unidade_pressao
+        description: "Unidade da pressão arterial (mmHg)"
+      - name: status
+        description: "Status da observação, traduzido"
+      - name: data_medicao
+        description: "Data e hora em que a medição ocorreu, horário de Brasília"

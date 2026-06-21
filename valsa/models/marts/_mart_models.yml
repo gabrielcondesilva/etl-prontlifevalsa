@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: qualidade_exame_fisico
+    description: >
+      Tabela de qualidade de dados para pressão arterial registrada no
+      fato_exame_fisico. Contém apenas medições com valores fisiologicamente
+      implausíveis, para investigação do time clínico. Regra de flag
+      (pressao_suspeita): dispara quando pressao_sistolica < pressao_diastolica
+      (sistólica não pode ser menor que diastólica), ou pressao_sistolica < 30
+      (valor implausível), ou pressao_diastolica > 200 (valor implausível).
+      Ordenada por data_medicao decrescente (mais recentes primeiro).
+    columns:
+      - name: id_medicao
+        description: "Identificador único da medição (referência ao fato_exame_fisico)"
+        tests:
+          - unique
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos)"
+      - name: id_registrante
+        description: "ID de quem registrou a medição"
+      - name: nome_registrante
+        description: "Nome de quem registrou a medição"
+      - name: nome_exame
+        description: "Tipo de pressão arterial (sentado ou deitado)"
+      - name: pressao_sistolica
+        description: "Valor da pressão sistólica registrada"
+      - name: pressao_diastolica
+        description: "Valor da pressão diastólica registrada"
+      - name: pressao_media
+        description: "Pressão arterial média, quando disponível"
+      - name: data_medicao
+        description: "Data e hora da medição, horário de Brasília"
+      - name: pressao_suspeita
+        description: "Sempre true nesta tabela — flag de valor fisiologicamente implausível"
