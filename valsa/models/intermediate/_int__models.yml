@@ -421,3 +421,40 @@ models:
         description: "Status da observação, traduzido"
       - name: data_medicao
         description: "Data e hora em que a medição ocorreu, horário de Brasília"
+  - name: fato_exame_lab
+    description: >
+      Fato de exames de laboratório. Aplica "mais novo ganha" por
+      observation_id. Resultado numérico vem direto do valueQuantity
+      (campo valor_resultado); quando o laboratório retorna o resultado
+      em formato não padrão (vírgula decimal, qualitativo, comparador,
+      valor composto), ele cai em resultado_texto e valor_resultado fica
+      nulo — esses casos ficam disponíveis para revisão na mart de
+      qualidade (qualidade_exame_lab).
+    columns:
+      - name: id_exame
+        description: "Identificador único do exame (chave primária do fato)"
+        tests:
+          - unique
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos)"
+      - name: id_registrante
+        description: "ID de quem registrou o exame (profissional ou paciente)"
+      - name: tipo_registrante
+        description: "Tipo do registrante: Profissional ou Paciente"
+      - name: nome_registrante
+        description: "Nome de quem registrou o exame, sem registro profissional colado"
+      - name: nome_exame
+        description: "Nome do exame, padronizado (variações de nomenclatura unificadas)"
+      - name: valor_resultado
+        description: "Resultado numérico do exame, quando disponível via valueQuantity"
+      - name: unidade
+        description: "Unidade do resultado numérico"
+      - name: resultado_texto
+        description: "Resultado em texto livre, usado quando o laboratório não retornou um valueQuantity válido"
+      - name: status
+        description: "Status do exame, traduzido"
+      - name: data_exame
+        description: "Data e hora em que o exame foi realizado, horário de Brasília"

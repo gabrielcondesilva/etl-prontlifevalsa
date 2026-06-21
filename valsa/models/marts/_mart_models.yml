@@ -36,3 +36,35 @@ models:
         description: "Data e hora da medição, horário de Brasília"
       - name: pressao_suspeita
         description: "Sempre true nesta tabela — flag de valor fisiologicamente implausível"
+  - name: qualidade_exame_lab
+    description: >
+      Tabela de qualidade de dados para creatinina, hemoglobina e LDL no
+      fato_exame_lab. Contém apenas exames com resultado disponível só
+      em texto (sem número convertido) ou com valor numérico fora da
+      faixa fisiologicamente plausível, para investigação do time clínico.
+      Regras de discrepância: Creatinina < 0.1 ou > 15 mg/dL; Hemoglobina
+      < 3 ou > 22 g/dL; LDL < 0 ou > 500 mg/dL.
+    columns:
+      - name: id_exame
+        description: "Identificador único do exame (referência ao fato_exame_lab)"
+        tests:
+          - unique
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: nome_exame
+        description: "Nome do exame: Creatinina (Cr), Hemoglobina (Hb) ou LDL"
+      - name: valor_resultado
+        description: "Valor numérico do resultado, quando disponível"
+      - name: resultado_texto
+        description: "Resultado em texto, quando o valor não pôde ser convertido para número"
+      - name: unidade
+        description: "Unidade do resultado"
+      - name: status
+        description: "Status do exame"
+      - name: data_exame
+        description: "Data e hora do exame, horário de Brasília"
+      - name: resultado_apenas_texto
+        description: "Flag: true quando o resultado existe só em texto, sem valor numérico"
+      - name: valor_discrepante
+        description: "Flag: true quando o valor numérico está fora da faixa fisiologicamente plausível"

@@ -46,6 +46,7 @@ renamed as (
         -- resultado
         (data -> 'valueQuantity' ->> 'value')::numeric                     as result_value,
         data -> 'valueQuantity' ->> 'unit'                                  as result_unit,
+        data ->> 'valueString'                                              as result_text,
 
         -- status e datas
         data ->> 'status'                                                   as status,
