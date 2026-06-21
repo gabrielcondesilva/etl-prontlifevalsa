@@ -12,7 +12,7 @@ with fato as (
 tres_exames as (
     select *
     from fato
-    where nome_exame in ('Creatinina (Cr)', 'Hemoglobina (Hb)', 'LDL')
+    where nome_exame in ('Creatinina (Cr)', 'Hemoglobina Glicada (A1C)', 'LDL')
 ),
 
 flags as (
@@ -33,8 +33,8 @@ flags as (
         case
             when nome_exame = 'Creatinina (Cr)'
                 then valor_resultado < 0.1 or valor_resultado > 15
-            when nome_exame = 'Hemoglobina (Hb)'
-                then valor_resultado < 3 or valor_resultado > 22
+            when nome_exame = 'Hemoglobina Glicada (A1C)'
+                then valor_resultado < 3 or valor_resultado > 20
             when nome_exame = 'LDL'
                 then valor_resultado < 0 or valor_resultado > 500
             else false
