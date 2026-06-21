@@ -309,101 +309,76 @@ models:
 
       - name: observacao
         description: "Observações registradas sobre o episódio"
+  - name: fato_diagnosticos
+    description: >
+      Fato de diagnósticos registrados no contexto de um atendimento.
+      Aplica "mais novo ganha" por condition_id. O registrante pode ser
+      um profissional ou o próprio paciente (pré-consulta).
+    columns:
+      - name: id_diagnostico
+        description: "Identificador único do diagnóstico (chave primária do fato)"
+        tests:
+          - unique
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos)"
+      - name: id_registrante
+        description: "ID de quem registrou o diagnóstico (profissional ou paciente)"
+      - name: tipo_registrante
+        description: "Tipo do registrante: Profissional ou Paciente"
+      - name: nome_registrante
+        description: "Nome de quem registrou o diagnóstico"
+      - name: codigo_cid10
+        description: "Código CID-10 do diagnóstico"
+      - name: descricao_cid10
+        description: "Descrição do CID-10, sem o código colado no texto"
+      - name: status_clinico
+        description: "Status clínico traduzido"
+      - name: status_verificacao
+        description: "Status de verificação traduzido"
+      - name: observacao
+        description: "Observação registrada"
+      - name: data_registro
+        description: "Data e hora de registro, horário de Brasília"
+
   - name: fato_diagnosticos_hpp
     description: >
       Fato de diagnósticos/HPP (histórico pessoal de doenças). Aplica
-      "mais novo ganha" sobre o histórico de versões de cada diagnóstico
-      na staging. Traduz categoria, gravidade, status clínico e status
-      de verificação para português.
+      "mais novo ganha" por condition_id. O registrante pode ser um
+      profissional ou o próprio paciente.
     columns:
       - name: id_diagnostico
         description: "Identificador único do diagnóstico (chave primária do fato)"
         tests:
           - unique
           - not_null
-
       - name: id_paciente
         description: "Referência ao paciente (dim_pacientes)"
-
       - name: id_atendimento
-        description: "Referência ao atendimento onde o diagnóstico foi registrado (fato_atendimentos)"
-
-      - name: id_profissional
-        description: "Referência ao profissional que registrou o diagnóstico (dim_profissionais)"
-
-      - name: nome_profissional
-        description: "Nome do profissional que registrou o diagnóstico"
-
+        description: "Referência ao atendimento (fato_atendimentos)"
+      - name: id_registrante
+        description: "ID de quem registrou o diagnóstico (profissional ou paciente)"
+      - name: tipo_registrante
+        description: "Tipo do registrante: Profissional ou Paciente"
+      - name: nome_registrante
+        description: "Nome de quem registrou o diagnóstico"
       - name: nome_diagnostico
         description: "Nome/descrição do diagnóstico"
-
       - name: codigo_cid10
         description: "Código CID-10 do diagnóstico"
-
       - name: descricao_cid10
-        description: "Descrição oficial do código CID-10"
-
+        description: "Descrição do CID-10"
       - name: categoria
-        description: "Categoria do registro (Registro de Doença / Diagnóstico em Atendimento), traduzida"
-
+        description: "Categoria traduzida"
       - name: gravidade
-        description: "Gravidade da condição (Leve/Moderada/Severa), traduzida"
-
+        description: "Gravidade traduzida"
       - name: status_clinico
-        description: "Status clínico da condição, traduzido (Ativa/Inativa/Reincidência/Recaída/Remissão/Curada)"
-
+        description: "Status clínico traduzido"
       - name: status_verificacao
-        description: "Status de verificação do diagnóstico, traduzido (Confirmado/Não confirmado/Provisório/Erro)"
-
+        description: "Status de verificação traduzido"
       - name: observacao
-        description: "Observações registradas sobre o diagnóstico"
-
+        description: "Observação registrada"
       - name: data_registro
-        description: "Data e hora de registro do diagnóstico, no horário de Brasília"
-  - name: fato_diagnosticos
-    description: >
-      Fato de diagnósticos registrados no contexto de um atendimento
-      (encounter_id sempre preenchido), diferente do fato_diagnosticos_hpp
-      que cobre o histórico pessoal de doenças do paciente. condition_id já
-      é único na origem, sem necessidade de dedup "mais novo ganha". Trata
-      um bug conhecido da Prontlife em que o código CID-10 às vezes é
-      substituído por um ID interno numérico: nesses casos, o código real
-      é extraído do sufixo "(CID10 - X00.0)" presente na descrição.
-    columns:
-      - name: id_diagnostico
-        description: "Identificador único do diagnóstico (chave primária do fato)"
-        tests:
-          - unique
-          - not_null
-
-      - name: id_paciente
-        description: "Referência ao paciente (dim_pacientes)"
-
-      - name: id_atendimento
-        description: "Referência ao atendimento onde o diagnóstico foi registrado (fato_atendimentos)"
-
-      - name: id_profissional
-        description: "Referência ao profissional que registrou e afirmou o diagnóstico (dim_profissionais)"
-
-      - name: nome_profissional
-        description: "Nome do profissional que registrou e afirmou o diagnóstico"
-
-      - name: codigo_cid10
-        description: >
-          Código CID-10 do diagnóstico. Quando a origem grava um ID interno
-          em vez do código CID, o valor correto é extraído da descrição.
-
-      - name: descricao_cid10
-        description: "Descrição oficial do código CID-10, sem o código embutido no texto"
-
-      - name: status_clinico
-        description: "Status clínico da condição, traduzido (Ativa/Inativa/Reincidência/Recaída/Remissão/Curada)"
-
-      - name: status_verificacao
-        description: "Status de verificação do diagnóstico, traduzido (Confirmado/Não confirmado/Provisório/Diferencial/Refutado/Erro)"
-
-      - name: observacao
-        description: "Observações em texto livre registradas pelo profissional sobre o diagnóstico"
-
-      - name: data_registro
-        description: "Data e hora de registro do diagnóstico, no horário de Brasília"
+        description: "Data e hora de registro, horário de Brasília"

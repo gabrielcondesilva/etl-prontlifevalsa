@@ -38,8 +38,15 @@ final as (
 
         patient_id                                                          as id_paciente,
         encounter_id                                                        as id_atendimento,
-        recorder_id                                                         as id_profissional,
-        recorder_name                                                       as nome_profissional,
+
+        -- registrante (pode ser profissional ou o próprio paciente)
+        recorder_id                                                         as id_registrante,
+        case recorder_reference_type
+            when 'Practitioner' then 'Profissional'
+            when 'Patient'      then 'Paciente'
+            else recorder_reference_type
+        end                                                                  as tipo_registrante,
+        {{ capitalize_name('recorder_name') }}                              as nome_registrante,
 
         coalesce(cid10_extraido_do_display, cid10_internal_code)            as codigo_cid10,
 

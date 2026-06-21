@@ -10,9 +10,15 @@ renamed as (
         -- referências
         replace(data -> 'subject' ->> 'reference', 'Patient/', '')         as patient_id,
         replace(data -> 'encounter' ->> 'reference', 'Encounter/', '')     as encounter_id,
-        replace(data -> 'recorder' ->> 'reference', 'Practitioner/', '')   as recorder_id,
+
+        -- recorder (pode ser Practitioner ou Patient)
+        split_part(data -> 'recorder' ->> 'reference', '/', 2)             as recorder_id,
+        split_part(data -> 'recorder' ->> 'reference', '/', 1)             as recorder_reference_type,
         data -> 'recorder' ->> 'display'                                    as recorder_name,
-        replace(data -> 'asserter' ->> 'reference', 'Practitioner/', '')   as asserter_id,
+
+        -- asserter (pode ser Practitioner ou Patient)
+        split_part(data -> 'asserter' ->> 'reference', '/', 2)             as asserter_id,
+        split_part(data -> 'asserter' ->> 'reference', '/', 1)             as asserter_reference_type,
         data -> 'asserter' ->> 'display'                                    as asserter_name,
         data -> 'asserter' ->> 'type'                                       as asserter_type,
 

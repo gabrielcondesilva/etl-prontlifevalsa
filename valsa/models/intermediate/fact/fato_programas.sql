@@ -66,7 +66,7 @@ final as (
             when 'active'   then 'Ativo'
             when 'inactive' then 'Inativo'
             else status
-        end                                                                  as status,
+        end                                                                  as status_paciente,
 
         -- período (sem timezone, horário de Brasília)
         (period_start at time zone 'America/Sao_Paulo')::timestamp         as data_admissao,
