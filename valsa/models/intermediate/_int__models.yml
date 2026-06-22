@@ -458,3 +458,38 @@ models:
         description: "Status do exame, traduzido"
       - name: data_exame
         description: "Data e hora em que o exame foi realizado, horário de Brasília"
+  - name: fato_exame_imagem
+    description: >
+      Fato de exames de imagem (ultrassom, ressonância, tomografia, ECG,
+      mamografia, densitometria óssea, entre outros). Aplica "mais novo
+      ganha" por observation_id. Laudo em texto livre e anexo são campos
+      sensíveis (LGPD). Usa effective_datetime (data de realização do
+      exame), não issued (data de lançamento do laudo no sistema).
+    columns:
+      - name: id_exame
+        description: "Identificador único do exame (chave primária do fato)"
+        tests:
+          - unique
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos)"
+      - name: id_registrante
+        description: "ID de quem registrou o exame (profissional ou paciente)"
+      - name: tipo_registrante
+        description: "Tipo do registrante: Profissional ou Paciente"
+      - name: nome_registrante
+        description: "Nome de quem registrou o exame, sem registro profissional colado"
+      - name: nome_exame
+        description: "Nome do exame de imagem (ultrassom, ressonância, tomografia, etc.)"
+      - name: laudo_texto
+        description: "Laudo do exame em texto livre — dado sensível (LGPD)"
+      - name: attachment_url
+        description: "URL do anexo do laudo, quando o resultado foi enviado como imagem/foto"
+      - name: attachment_title
+        description: "Título do arquivo anexado"
+      - name: status
+        description: "Status do exame, traduzido"
+      - name: data_exame
+        description: "Data em que o exame foi realizado (effective_datetime), horário de Brasília"
