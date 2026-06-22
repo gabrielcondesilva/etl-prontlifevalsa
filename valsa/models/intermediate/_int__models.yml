@@ -1041,3 +1041,36 @@ models:
         description: "Status do registro, traduzido"
       - name: data_registro
         description: "Data e hora do registro, horário de Brasília"
+  - name: fato_observacao_hpi
+    description: >
+      Fato de observações clínicas do tipo HPI (History of Present Illness),
+      representando a história da doença atual registrada durante os atendimentos.
+      Contém o texto livre da avaliação clínica, profissional responsável,
+      status da observação e data do registro.
+    columns:
+      - name: id_observacao_hpi
+        description: "Identificador único da observação HPI"
+        tests:
+          - unique
+          - not_null
+
+      - name: id_paciente
+        description: "Referência ao paciente"
+
+      - name: id_atendimento
+        description: "Referência ao atendimento relacionado à observação"
+
+      - name: id_registrante
+        description: "Identificador do profissional que registrou a observação"
+
+      - name: nome_registrante
+        description: "Nome do profissional que registrou a observação"
+
+      - name: texto_hpi
+        description: "Texto da história da doença atual (HPI), contendo a descrição clínica registrada durante o atendimento"
+
+      - name: status
+        description: "Status da observação clínica"
+
+      - name: data_observacao
+        description: "Data e hora em que a observação clínica foi registrada, em horário de Brasília"
