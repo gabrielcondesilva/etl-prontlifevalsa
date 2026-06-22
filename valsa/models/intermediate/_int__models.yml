@@ -679,3 +679,54 @@ models:
 
       - name: status
         description: "Status atual do plano, traduzido como Ativo ou Inativo"
+  - name: fato_escore_risco
+    description: >
+      Fato de avaliações de risco realizadas para pacientes. Mantém uma
+      linha por risk_assessment_id, considerando a versão mais recente
+      pelo delivery_date e occurrence_datetime. Contém o resultado,
+      predição e status da avaliação de risco.
+    columns:
+      - name: id_escore_risco
+        description: "Identificador único da avaliação de risco"
+        tests:
+          - unique
+          - not_null
+
+      - name: id_paciente
+        description: "Referência ao paciente avaliado"
+
+      - name: id_atendimento
+        description: "Referência ao atendimento relacionado à avaliação"
+
+      - name: id_questionario_resposta
+        description: "Referência ao questionário que originou a avaliação"
+
+      - name: id_registrante
+        description: "Identificador de quem registrou a avaliação"
+
+      - name: tipo_registrante
+        description: "Tipo do registrante, traduzido como Profissional ou Dispositivo"
+
+      - name: nome_registrante
+        description: "Nome do profissional ou dispositivo que registrou a avaliação"
+
+      - name: nome_escore
+        description: "Nome do escore ou método utilizado na avaliação"
+
+      - name: codigo_predicao
+        description: "Código da classificação ou predição gerada pelo escore"
+
+      - name: predicao
+        description: "Resultado ou classificação gerada pelo escore"
+
+      - name: justificativa_predicao
+        description: "Justificativa clínica da predição, quando disponível"
+
+      - name: valor_escore
+        description: "Valor numérico obtido na avaliação"
+
+      - name: status
+        description: "Status da avaliação, traduzido como Final ou Preliminar"
+
+      - name: data_ocorrencia
+        description: "Data e hora em que a avaliação de risco ocorreu, em horário de Brasília"
