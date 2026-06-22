@@ -1074,3 +1074,55 @@ models:
 
       - name: data_observacao
         description: "Data e hora em que a observação clínica foi registrada, em horário de Brasília"
+  - name: fato_habitos
+    description: >
+      Fato de hábitos e estilo de vida dos pacientes. Mantém uma linha por
+      observation_id, considerando a versão mais recente do registro com base
+      em delivery_date e issued. Contém informações sobre atividade física,
+      tabagismo, etilismo e outros hábitos declarados pelo paciente ou
+      registrados por profissionais.
+    columns:
+      - name: id_habito
+        description: "Identificador único do hábito registrado"
+        tests:
+          - unique
+          - not_null
+
+      - name: id_paciente
+        description: "Referência ao paciente"
+
+      - name: id_atendimento
+        description: "Referência ao atendimento relacionado ao hábito"
+
+      - name: id_registrante
+        description: "Identificador de quem registrou o hábito"
+
+      - name: tipo_registrante
+        description: "Indica se o registro foi realizado por um Profissional ou pelo próprio Paciente"
+
+      - name: nome_registrante
+        description: "Nome de quem registrou o hábito"
+
+      - name: habito
+        description: "Descrição do hábito ou estilo de vida registrado"
+
+      - name: cigarros_por_dia
+        description: "Quantidade de cigarros consumidos por dia, quando aplicável"
+
+      - name: anos_tabagismo
+        description: "Quantidade de anos de tabagismo, quando aplicável"
+
+      - name: macos_por_ano
+        description: "Quantidade de maços por ano (pack-years), quando aplicável"
+
+      - name: doses_alcool_por_semana
+        description: "Quantidade de doses de álcool consumidas por semana, quando aplicável"
+
+      - name: observacao
+        description: "Observações adicionais relacionadas ao hábito"
+
+      - name: status
+        description: "Status do registro do hábito"
+
+      - name: data_emissao
+        description: "Data e hora em que o hábito foi registrado, em horário de Brasília"
