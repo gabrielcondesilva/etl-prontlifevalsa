@@ -522,3 +522,65 @@ models:
         description: "Data e hora em que o registro foi lançado no sistema, horário de Brasília"
       - name: data_aplicacao
         description: "Data e hora em que a vacina foi efetivamente aplicada, horário de Brasília"
+  - name: fato_medicacao_prescrita
+    description: >
+      Fato de prescrições médicas. Aplica "mais novo ganha" por
+      medication_request_id — uma prescrição pode evoluir (dose
+      ajustada, status mudando entre ativa/concluída/reativada),
+      e a versão mais recente reflete o estado real e atual do
+      tratamento. medication_id não é confiável como referência
+      (valores genéricos como "#Medication1" repetem entre
+      medicamentos diferentes), por isso não foi incluído — o
+      nome do medicamento é a fonte de verdade.
+    columns:
+      - name: id_prescricao
+        description: "Identificador único da prescrição (chave primária do fato)"
+        tests:
+          - unique
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento, quando disponível (fato_atendimentos)"
+      - name: id_registrante
+        description: "ID de quem registrou a prescrição"
+      - name: nome_registrante
+        description: "Nome de quem registrou a prescrição, sem cargo/registro colado"
+      - name: id_solicitante
+        description: "ID de quem solicitou a prescrição"
+      - name: nome_solicitante
+        description: "Nome de quem solicitou a prescrição, sem cargo/registro colado"
+      - name: nome_medicamento
+        description: "Nome do medicamento prescrito, incluindo apresentação/dosagem no texto"
+      - name: categoria
+        description: "Código de categoria da prescrição"
+      - name: tipo_terapia
+        description: "Tipo de terapia traduzido (Contínuo/Agudo-Pontual)"
+      - name: tipo_receituario
+        description: "Tipo de receituário (Comum, Receita Branca, Especial, etc.)"
+      - name: posologia_texto
+        description: "Texto completo da posologia, como prescrito"
+      - name: via_administracao
+        description: "Via de administração do medicamento"
+      - name: valor_dose
+        description: "Valor numérico da dose, quando estruturado"
+      - name: unidade_dose
+        description: "Unidade da dose (comprimido, mL, mg, etc.)"
+      - name: frequencia
+        description: "Frequência numérica de administração"
+      - name: unidade_frequencia
+        description: "Unidade da frequência (d=dia, wk=semana, mo=mês)"
+      - name: horario
+        description: "Período do dia para administração, traduzido (Manhã/Tarde/Noite) quando aplicável; mantém valor original se for outro formato (ex: horário específico)"
+      - name: valor_duracao
+        description: "Valor numérico da duração do tratamento"
+      - name: unidade_duracao
+        description: "Unidade da duração (d=dia, wk=semana, mo=mês)"
+      - name: uso_se_necessario
+        description: "Indica se o uso é condicional (SOS/se necessário)"
+      - name: status
+        description: "Status da prescrição, traduzido (Ativa/Concluída/Cancelada/Interrompida/Em espera/Erro de registro/Rascunho)"
+      - name: observacao
+        description: "Observações adicionais sobre a prescrição"
+      - name: data_prescricao
+        description: "Data e hora em que a prescrição foi autorizada/escrita, horário de Brasília"
