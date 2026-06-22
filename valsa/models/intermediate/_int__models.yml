@@ -730,3 +730,100 @@ models:
 
       - name: data_ocorrencia
         description: "Data e hora em que a avaliação de risco ocorreu, em horário de Brasília"
+  - name: fato_alergias_intolerancias
+    description: >
+      Fato de alergias e intolerâncias registradas para pacientes.
+      Mantém uma linha por allergy_id, considerando o registro mais
+      recente pelo delivery_date e recorded_date. Contém informações
+      sobre a substância, status clínico e validação da alergia.
+    columns:
+      - name: id_alergia_intolerancia
+        description: "Identificador único da alergia ou intolerância"
+        tests:
+          - unique
+          - not_null
+
+      - name: id_paciente
+        description: "Referência ao paciente"
+
+      - name: id_atendimento
+        description: "Referência ao atendimento relacionado ao registro"
+
+      - name: id_registrante
+        description: "Identificador de quem registrou a alergia ou intolerância"
+
+      - name: tipo_registrante
+        description: "Tipo do registrante, traduzido como Profissional ou Paciente"
+
+      - name: nome_registrante
+        description: "Nome de quem registrou a alergia ou intolerância"
+
+      - name: tipo_alergia
+        description: "Classificação do registro como Alergia ou Intolerância"
+
+      - name: nome_substancia
+        description: "Nome da substância associada à alergia ou intolerância"
+
+      - name: status_clinico
+        description: "Status clínico da alergia ou intolerância"
+
+      - name: status_verificacao
+        description: "Status de validação do registro, como Confirmado ou Não confirmado"
+
+      - name: observacao
+        description: "Observações registradas sobre a alergia ou intolerância"
+
+      - name: data_registro
+        description: "Data e hora em que a alergia ou intolerância foi registrada, em horário de Brasília"
+  - name: fato_historico_familiar
+    description: >
+      Fato de histórico familiar dos pacientes. Mantém uma linha por
+      family_history_id, considerando a versão mais recente do registro
+      com base em delivery_date e recorded_date. Contém informações
+      sobre condições de saúde em familiares, parentesco, CID10 e
+      validação clínica.
+    columns:
+      - name: id_historico_familiar
+        description: "Identificador único do histórico familiar"
+        tests:
+          - unique
+          - not_null
+
+      - name: id_paciente
+        description: "Referência ao paciente"
+
+      - name: id_atendimento
+        description: "Referência ao atendimento relacionado ao registro"
+
+      - name: id_registrante
+        description: "Identificador de quem registrou o histórico familiar"
+
+      - name: tipo_registrante
+        description: "Indica se o registro foi realizado por um Profissional ou pelo próprio Paciente"
+
+      - name: nome_registrante
+        description: "Nome de quem registrou o histórico familiar"
+
+      - name: parentesco
+        description: "Grau de parentesco do familiar relacionado ao histórico"
+
+      - name: condicao
+        description: "Condição de saúde relatada no histórico familiar"
+
+      - name: cid10
+        description: "Código CID-10 associado à condição, quando informado"
+
+      - name: descricao_cid10
+        description: "Descrição do código CID-10 associado à condição"
+
+      - name: observacao
+        description: "Observações adicionais registradas para o histórico familiar"
+
+      - name: status
+        description: "Status do histórico familiar"
+
+      - name: status_verificacao
+        description: "Status de validação clínica do histórico familiar"
+
+      - name: data_registro
+        description: "Data e hora em que o histórico familiar foi registrado, em horário de Brasília"
