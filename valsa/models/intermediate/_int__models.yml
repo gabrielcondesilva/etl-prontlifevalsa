@@ -639,3 +639,43 @@ models:
 
       - name: data_declaracao
         description: "Data e hora em que o uso do medicamento foi declarado/confirmado, horário de Brasília"
+  - name: dim_convenios
+    description: >
+      Dimensão de convênios/plano de saúde. Mantém uma linha por
+      healthinsurance_id, considerando o registro mais recente pelo
+      delivery_date.
+    columns:
+      - name: id_convenio
+        description: "Identificador único do convênio"
+        tests:
+          - unique
+          - not_null
+
+      - name: nome_convenio
+        description: "Nome do convênio ou plano de saúde"
+
+      - name: razao_social
+        description: "Razão social vinculada ao convênio"
+
+      - name: status
+        description: "Status atual do convênio, traduzido como Ativo ou Inativo"
+  - name: dim_planos_convenios
+    description: >
+      Dimensão de planos de convênio. Mantém uma linha por
+      healthinsuranceplan_id, considerando o registro mais recente
+      pelo delivery_date.
+    columns:
+      - name: id_plano_convenio
+        description: "Identificador único do plano de convênio"
+        tests:
+          - unique
+          - not_null
+
+      - name: id_convenio
+        description: "Referência ao convênio ao qual o plano pertence"
+
+      - name: nome_plano
+        description: "Nome do plano de convênio"
+
+      - name: status
+        description: "Status atual do plano, traduzido como Ativo ou Inativo"
