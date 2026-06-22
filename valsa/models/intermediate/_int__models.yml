@@ -493,3 +493,32 @@ models:
         description: "Status do exame, traduzido"
       - name: data_exame
         description: "Data em que o exame foi realizado (effective_datetime), horário de Brasília"
+  - name: fato_vacinacao
+    description: >
+      Fato de vacinas/imunizações. Aplica duas camadas de dedup: "mais
+      novo ganha" por immunization_id (resolve múltiplas versões do
+      mesmo registro), e dedup por chave de negócio (paciente + nome
+      da vacina + data de aplicação), pois a Prontlife gera um
+      immunization_id novo a cada entrega para o mesmo evento de
+      vacinação — o mesmo bug visto no fato_programas.
+    columns:
+      - name: id_vacina
+        description: "Identificador da vacina (referência ao registro mais recente após dedup)"
+        tests:
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_registrante
+        description: "ID de quem registrou a vacina (profissional ou paciente)"
+      - name: tipo_registrante
+        description: "Tipo do registrante: Profissional ou Paciente"
+      - name: nome_vacina
+        description: "Nome da vacina aplicada"
+      - name: status
+        description: "Status da vacinação, traduzido (Completo/Erro de registro/Não realizado)"
+      - name: observacao
+        description: "Observações sobre a vacinação (dose, lote, detalhes adicionais)"
+      - name: data_registro
+        description: "Data e hora em que o registro foi lançado no sistema, horário de Brasília"
+      - name: data_aplicacao
+        description: "Data e hora em que a vacina foi efetivamente aplicada, horário de Brasília"
