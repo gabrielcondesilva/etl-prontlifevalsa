@@ -584,3 +584,58 @@ models:
         description: "Observações adicionais sobre a prescrição"
       - name: data_prescricao
         description: "Data e hora em que a prescrição foi autorizada/escrita, horário de Brasília"
+  - name: fato_medicacao_hpp
+    description: >
+      Fato de medicamentos declarados/em uso pelo paciente. Aplica "mais
+      novo ganha" por medication_statement_id, usando delivery_date e
+      date_asserted como desempate, para manter o estado atual do
+      medicamento declarado. Um medicamento pode aparecer como ativo,
+      completo, parado ou cancelado conforme sua situação mais recente.
+    columns:
+      - name: id_uso_medicamento
+        description: "Identificador único do uso/declaracão de medicamento (chave primária do fato)"
+        tests:
+          - unique
+          - not_null
+
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+
+      - name: id_atendimento
+        description: "Referência ao atendimento, quando disponível (fato_atendimentos)"
+
+      - name: id_registrante
+        description: "ID de quem registrou a declaração do medicamento"
+
+      - name: tipo_registrante
+        description: "Tipo do registrante, traduzido: Profissional ou Paciente"
+
+      - name: nome_registrante
+        description: "Nome de quem registrou a declaração do medicamento"
+
+      - name: nome_medicamento
+        description: "Nome do medicamento declarado pelo paciente"
+
+      - name: uso_continuo
+        description: "Indica se o medicamento é de uso contínuo"
+
+      - name: posologia_texto
+        description: "Texto completo da posologia informada"
+
+      - name: via_administracao
+        description: "Via de administração do medicamento"
+
+      - name: valor_dose
+        description: "Valor numérico da dose, quando estruturado"
+
+      - name: unidade_dose
+        description: "Unidade da dose"
+
+      - name: status
+        description: "Status atual do uso do medicamento, traduzido (Ativo/Aguardando/Cancelado/Completo/Erro/Parado/Rascunho/Desconhecido)"
+
+      - name: observacao
+        description: "Observações registradas sobre o medicamento"
+
+      - name: data_declaracao
+        description: "Data e hora em que o uso do medicamento foi declarado/confirmado, horário de Brasília"
