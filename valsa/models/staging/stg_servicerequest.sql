@@ -49,10 +49,30 @@ renamed as (
             limit 1
         )                                                                   as imaging_type,
 
+        -- especialidade do encaminhamento (performerType)
+        (
+            select item ->> 'display'
+            from jsonb_array_elements(data -> 'performerType' -> 'coding') as item
+            where item ->> 'system' like '%specialty%'
+            limit 1
+        )                                                                   as specialty_name,
+        (
+            select item ->> 'display'
+            from jsonb_array_elements(data -> 'performerType' -> 'coding') as item
+            where item ->> 'system' like '%mtecbo%'
+            limit 1
+        )                                                                   as specialty_cbo_name,
+
         -- intent, status e justificativa
         data ->> 'intent'                                                   as intent,
         data ->> 'status'                                                   as status,
         data -> 'reasonCode' -> 0 ->> 'text'                               as reason,
+
+        -- instrução ao paciente (orientação de saúde)
+        data ->> 'patientInstruction'                                       as patient_instruction,
+
+        -- periodicidade (pontual, contínuo, etc.)
+        data -> 'occurrenceTiming' -> 'code' ->> 'text'                    as occurrence_timing,
 
         -- data da solicitação
         (data ->> 'authoredOn')::timestamptz                               as authored_on,

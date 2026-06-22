@@ -827,3 +827,217 @@ models:
 
       - name: data_registro
         description: "Data e hora em que o histórico familiar foi registrado, em horário de Brasília"
+  - name: fato_encaminhamento
+    description: >
+      Fato de encaminhamentos a especialistas (category_code = 3457005,
+      "Referral procedure" no SNOMED). Aplica dedup por
+      service_request_id + authored_on, mantendo histórico de
+      múltiplos encaminhamentos do mesmo paciente ao longo do tempo.
+      A especialidade vem do campo performerType da origem.
+    columns:
+      - name: id_encaminhamento
+        description: "Identificador do encaminhamento (não único isoladamente — combinar com data_solicitacao)"
+        tests:
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos)"
+      - name: id_solicitante
+        description: "ID do profissional que fez o encaminhamento"
+      - name: especialidade
+        description: "Especialidade para a qual o paciente foi encaminhado (Nutrição, Psicologia, Nefrologia, etc.)"
+      - name: tipo_pedido
+        description: "Tipo de pedido, traduzido (Ordem/Plano)"
+      - name: status
+        description: "Status do encaminhamento, traduzido"
+      - name: motivo
+        description: "Motivo clínico do encaminhamento"
+      - name: data_solicitacao
+        description: "Data e hora da solicitação, horário de Brasília"
+
+  - name: fato_solicitacao_exame
+    description: >
+      Fato de solicitações de exame (laboratório e imagem, category_code
+      363679005 e 108252007). Aplica dedup por service_request_id +
+      authored_on, mantendo histórico de renovações/repetições de
+      solicitação ao longo do tempo.
+    columns:
+      - name: id_solicitacao
+        description: "Identificador da solicitação (não único isoladamente — combinar com data_solicitacao)"
+        tests:
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos)"
+      - name: id_solicitante
+        description: "ID do profissional que solicitou o exame"
+      - name: categoria
+        description: "Categoria da solicitação: Exame de Imagem ou Exame de Laboratório"
+      - name: nome_exame
+        description: "Nome do exame solicitado"
+      - name: tipo_imagem
+        description: "Tipo de exame de imagem (Ultrassonografia, Ressonância, etc.), quando aplicável"
+      - name: tipo_pedido
+        description: "Tipo de pedido, traduzido (Ordem/Plano)"
+      - name: status
+        description: "Status da solicitação, traduzido"
+      - name: motivo
+        description: "Motivo clínico da solicitação"
+      - name: data_solicitacao
+        description: "Data e hora da solicitação, horário de Brasília"
+
+  - name: fato_orientacao_saude
+    description: >
+      Fato de orientações de saúde diversas (category_code 405103001).
+      Cobre fisioterapia, instruções de medicação, vacinas, monitoramento
+      domiciliar, entre outros. Aplica dedup por service_request_id +
+      authored_on, mantendo histórico de orientações ao longo do tempo.
+    columns:
+      - name: id_orientacao
+        description: "Identificador da orientação (não único isoladamente — combinar com data_orientacao)"
+        tests:
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos)"
+      - name: id_solicitante
+        description: "ID do profissional que deu a orientação"
+      - name: tipo_orientacao
+        description: "Tipo de orientação (Fisioterapia, Outros, Exercícios, etc.)"
+      - name: instrucao
+        description: "Texto completo da instrução dada ao paciente"
+      - name: periodicidade
+        description: "Periodicidade da orientação (Pontual/Contínuo)"
+      - name: status
+        description: "Status da orientação, traduzido"
+      - name: data_orientacao
+        description: "Data e hora da orientação, horário de Brasília"
+  - name: fato_procedimento_cirurgico
+    description: >
+      Fato de procedimentos cirúrgicos do HPP (recurso Procedure com
+      código TUSS presente). Aplica "mais novo ganha" por procedure_id.
+      Nome do procedimento limpo, removendo o texto "(TUSS - código)"
+      redundante já que o código fica em coluna própria (tuss_code).
+    columns:
+      - name: id_procedimento
+        description: "Identificador único do procedimento (chave primária do fato)"
+        tests:
+          - unique
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos)"
+      - name: id_registrante
+        description: "ID de quem registrou o procedimento (profissional ou paciente)"
+      - name: tipo_registrante
+        description: "Tipo do registrante: Profissional ou Paciente"
+      - name: nome_registrante
+        description: "Nome de quem registrou, sem cargo/registro colado"
+      - name: nome_procedimento
+        description: "Nome do procedimento cirúrgico, sem o código TUSS colado no texto"
+      - name: tuss_code
+        description: "Código TUSS do procedimento"
+      - name: status
+        description: "Status do procedimento, traduzido"
+      - name: status_verificacao
+        description: "Status de verificação, traduzido"
+      - name: observacao
+        description: "Observação registrada sobre o procedimento"
+      - name: data_registro
+        description: "Data e hora de registro, horário de Brasília"
+
+  - name: fato_internacao_hpp
+    description: >
+      Fato de internações e eventos de saúde do HPP (recurso Procedure
+      sem código TUSS) — cobre condições/eventos como pneumonia,
+      fraturas, histórico familiar de doença, e o valor-sentinela
+      "Paciente Nega" (ausência de histórico). Aplica "mais novo ganha"
+      por procedure_id.
+    columns:
+      - name: id_internacao
+        description: "Identificador único do registro (chave primária do fato)"
+        tests:
+          - unique
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos)"
+      - name: id_registrante
+        description: "ID de quem registrou (profissional ou paciente)"
+      - name: tipo_registrante
+        description: "Tipo do registrante: Profissional ou Paciente"
+      - name: nome_registrante
+        description: "Nome de quem registrou, sem cargo/registro colado"
+      - name: nome_evento
+        description: "Nome do evento/condição de internação registrado, incluindo o caso 'Paciente Nega' quando aplicável"
+      - name: status
+        description: "Status do registro, traduzido"
+      - name: status_verificacao
+        description: "Status de verificação, traduzido"
+      - name: observacao
+        description: "Observação registrada sobre o evento"
+      - name: data_registro
+        description: "Data e hora de registro, horário de Brasília"
+  - name: fato_orientacao_nutricional
+    description: >
+      Fato de orientações/planos nutricionais (recurso NutritionOrder).
+      Cobre desde orientações simples (ex: "beber 2L de água/dia") até
+      planos alimentares completos e encaminhamentos para avaliação
+      nutricional. Aplica "mais novo ganha" por nutrition_order_id.
+    columns:
+      - name: id_orientacao
+        description: "Identificador único da orientação nutricional (chave primária do fato)"
+        tests:
+          - unique
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos)"
+      - name: id_solicitante
+        description: "ID do profissional que fez a orientação/prescrição nutricional"
+      - name: nome_solicitante
+        description: "Nome do profissional, sem cargo/registro colado"
+      - name: instrucao
+        description: "Texto completo da orientação ou plano nutricional"
+      - name: periodicidade
+        description: "Periodicidade da orientação (Habitual/Pontual)"
+      - name: tipo_pedido
+        description: "Tipo de pedido, traduzido (Ordem/Plano)"
+      - name: status
+        description: "Status da orientação, traduzido"
+      - name: data_orientacao
+        description: "Data e hora da orientação, horário de Brasília"
+  - name: fato_queixa
+    description: >
+      Fato de queixas/motivos de consulta, classificados pelo código
+      CIAP (Classificação Internacional de Atenção Primária). Um
+      atendimento pode gerar múltiplas queixas registradas. Aplica
+      "mais novo ganha" por observation_id.
+    columns:
+      - name: id_queixa
+        description: "Identificador único da queixa (chave primária do fato)"
+        tests:
+          - unique
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento onde a queixa foi registrada (fato_atendimentos)"
+      - name: id_registrante
+        description: "ID do profissional que registrou a queixa"
+      - name: nome_registrante
+        description: "Nome do profissional, sem cargo/registro colado"
+      - name: codigo_ciap
+        description: "Código CIAP (Classificação Internacional de Atenção Primária) da queixa"
+      - name: nome_queixa
+        description: "Descrição da queixa/motivo de consulta"
+      - name: status
+        description: "Status do registro, traduzido"
+      - name: data_registro
+        description: "Data e hora do registro, horário de Brasília"
