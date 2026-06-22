@@ -225,7 +225,7 @@ models:
 
       - name: status_atendimento
         description: "Status detalhado do atendimento associado ao agendamento"
-  - name: dim_convenios
+  - name: dim_carteira_saude
     description: >
       Dimensão de convênios/planos de saúde. Aplica "mais novo ganha" sobre
       o histórico de versões de cada convênio na staging. Um paciente pode

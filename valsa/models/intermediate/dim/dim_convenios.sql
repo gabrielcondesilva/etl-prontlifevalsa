@@ -1,19 +1,19 @@
 {{
     config(
         materialized = 'table',
-        tags = ['intermediate', 'dimension']
+        tags = ['intermediate', 'dim']
     )
 }}
 
 with stg as (
-    select * from {{ ref('stg_coverage') }}
+    select * from {{ ref('stg_healthinsurance') }}
 ),
 
 numerado as (
     select
         *,
         row_number() over (
-            partition by coverage_id
+            partition by healthinsurance_id
             order by delivery_date desc
         ) as rn
     from stg
@@ -28,32 +28,18 @@ mais_recente as (
 final as (
     select
         -- chave
-        coverage_id                                                         as id_convenio,
+        healthinsurance_id as id_convenio,
 
-        -- pacientes envolvidos
-        subscriber_patient_id                                               as id_paciente_titular,
-        beneficiary_patient_id                                              as id_paciente_beneficiario,
+        -- convênio
+        name              as nome_convenio,
+        corporate_name    as razao_social,
 
-        -- plano e operadora
-        payor_name                                                          as nome_operadora,
-        plan_name                                                           as nome_plano,
-
-        -- carteirinhas
-        dependent_card_number                                               as numero_carteira_dependente,
-        subscriber_card_number                                              as numero_carteira_titular,
-
-        -- status traduzido
+        -- status
         case status
-            when 'active'           then 'Ativo'
-            when 'cancelled'        then 'Cancelado'
-            when 'draft'            then 'Rascunho'
-            when 'entered-in-error' then 'Erro de registro'
+            when 'active'   then 'Ativo'
+            when 'inactive' then 'Inativo'
             else status
-        end                                                                  as status,
-
-        -- vigência
-        period_start                                                        as data_inicio_vigencia,
-        period_end                                                          as data_fim_vigencia
+        end as status
 
     from mais_recente
 )
