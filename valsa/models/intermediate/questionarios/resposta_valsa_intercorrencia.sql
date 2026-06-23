@@ -6,7 +6,7 @@
 }}
 
 with stg as (
-    select * from {{ ref('stg_response_valsa_visita_medica') }}
+    select * from {{ ref('stg_response_valsa_intercorrencia') }}
 ),
 
 ultima_entrega_por_resposta as (
@@ -65,7 +65,7 @@ final as (
         {{ capitalize_name("split_part(author_display, ' - ', 1)") }}      as nome_autor,
 
         -- questionário
-        'aa03d8cd-c278-477a-b938-759d89d64803'                              as id_questionario,
+        '3245a003-8ccb-4605-9f03-dacc6ec7f567'                              as id_questionario,
 
         -- pergunta
         link_id                                                             as id_pergunta,

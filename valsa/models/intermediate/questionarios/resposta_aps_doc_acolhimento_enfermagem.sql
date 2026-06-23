@@ -17,12 +17,34 @@ ultima_entrega_por_resposta as (
     group by response_id
 ),
 
-mais_recente as (
+candidatos as (
     select stg.*
     from stg
     inner join ultima_entrega_por_resposta u
         on stg.response_id = u.response_id
         and stg.delivery_date = u.max_delivery_date
+),
+
+desempate as (
+    select
+        *,
+        row_number() over (
+            partition by response_id, link_id, answer_seq
+            order by
+                case status
+                    when 'completed'         then 1
+                    when 'in-progress'       then 2
+                    when 'entered-in-error'  then 3
+                    else 4
+                end
+        ) as rn_status
+    from candidatos
+),
+
+mais_recente as (
+    select *
+    from desempate
+    where rn_status = 1
 ),
 
 final as (
