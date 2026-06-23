@@ -1126,3 +1126,57 @@ models:
 
       - name: data_emissao
         description: "Data e hora em que o hábito foi registrado, em horário de Brasília"
+  - name: dim_questionarios
+    description: >
+      Dimensão de questionários/fichas disponíveis no sistema (recurso
+      Questionnaire). Cobre escalas clínicas (ex: MEEM, IVCF-20, GDS-15),
+      fichas de avaliação (nutrição, fisioterapia, enfermagem) e
+      formulários administrativos. Aplica "mais novo ganha" por
+      questionnaire_id.
+    columns:
+      - name: id_questionario
+        description: "Identificador único do questionário (chave primária da dimensão)"
+        tests:
+          - unique
+          - not_null
+      - name: nome_questionario
+        description: "Nome/título do questionário ou ficha"
+      - name: status
+        description: "Status do questionário, traduzido (Ativo/Rascunho)"
+      - name: descricao
+        description: "Descrição ou instruções do questionário, quando disponível (pode conter HTML)"
+  - name: dim_questionario_perguntas
+    description: >
+      Dimensão estrutural das perguntas que compõem cada questionário
+      (recurso Questionnaire, campo item[]). Representa o "molde" das
+      perguntas — não contém respostas de pacientes. Perguntas podem
+      estar soltas ou agrupadas (group_text). Aplica "mais novo ganha"
+      por questionnaire_id + link_id, já que a definição da pergunta é
+      redeclarada em toda entrega semanal.
+    columns:
+      - name: id_questionario
+        description: "Referência ao questionário (dim_questionarios)"
+        tests:
+          - not_null
+      - name: id_pergunta
+        description: "Identificador da pergunta dentro do questionário (linkId), único em combinação com id_questionario"
+        tests:
+          - not_null
+      - name: id_grupo
+        description: "Identificador do grupo ao qual a pergunta pertence, quando aplicável (ex: ANAMNESE, EXAME FÍSICO)"
+      - name: nome_grupo
+        description: "Nome do grupo ao qual a pergunta pertence, quando aplicável"
+      - name: texto_pergunta
+        description: "Texto da pergunta ou rótulo exibido ao usuário"
+      - name: tipo_pergunta
+        description: "Tipo da pergunta, traduzido (Escolha/Texto/Quantidade/Grupo/Exibição)"
+      - name: obrigatoria
+        description: "Indica se a pergunta é obrigatória"
+      - name: permite_repeticao
+        description: "Indica se a pergunta permite múltiplas respostas/repetições"
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - id_questionario
+            - id_pergunta
