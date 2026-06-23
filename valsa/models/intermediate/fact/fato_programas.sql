@@ -9,7 +9,6 @@ with stg as (
     select * from {{ ref('stg_customepisodeofcare') }}
 ),
 
--- normaliza a categoria antes de qualquer dedup (resolve "melhores cuidados" vs "Melhores Cuidados")
 normalizado as (
     select
         *,
@@ -17,7 +16,6 @@ normalizado as (
     from stg
 ),
 
--- camada 1: mais novo ganha por episode_of_care_id (resolve múltiplas versões do mesmo episódio)
 numerado_episodio as (
     select
         *,
@@ -34,7 +32,6 @@ mais_recente_episodio as (
     where rn_episodio = 1
 ),
 
--- camada 2: dedup por chave de negócio (resolve episode_of_care_id duplicados por bug da fonte)
 numerado_negocio as (
     select
         *,
@@ -43,6 +40,36 @@ numerado_negocio as (
             order by delivery_date desc
         ) as rn_negocio
     from mais_recente_episodio
+),
+
+base_negocio as (
+    select *
+    from numerado_negocio
+    where rn_negocio = 1
+),
+
+classificado as (
+    select
+        *,
+        max(
+            case
+                when status = 'active'
+                 and inactivation_datetime is null
+                then 1
+                else 0
+            end
+        ) over (
+            partition by patient_id, category_display_norm
+            order by period_start
+            rows between unbounded preceding and 1 preceding
+        ) as ja_tinha_ativo_anterior
+    from base_negocio
+),
+
+programas_validos as (
+    select *
+    from classificado
+    where coalesce(ja_tinha_ativo_anterior, 0) = 0
 ),
 
 final as (
@@ -68,17 +95,15 @@ final as (
             else status
         end                                                                  as status_paciente,
 
-        -- período (sem timezone, horário de Brasília)
-        (period_start at time zone 'America/Sao_Paulo')::timestamp         as data_admissao,
-        (period_end at time zone 'America/Sao_Paulo')::timestamp           as data_fim_prevista,
-        (inactivation_datetime at time zone 'America/Sao_Paulo')::timestamp
-                                                                            as data_inativacao,
+        -- período
+        (period_start at time zone 'America/Sao_Paulo')::timestamp          as data_admissao,
+        (period_end at time zone 'America/Sao_Paulo')::timestamp            as data_fim_prevista,
+        (inactivation_datetime at time zone 'America/Sao_Paulo')::timestamp as data_inativacao,
 
         -- observação
         note                                                                as observacao
 
-    from numerado_negocio
-    where rn_negocio = 1
+    from programas_validos
 )
 
 select * from final
