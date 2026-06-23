@@ -65,3 +65,68 @@ models:
         description: "Status da submissão no momento da entrega mais recente, traduzido (Concluído/Em andamento/Erro de registro)"
       - name: data_resposta
         description: "Data e hora em que a submissão foi registrada (authored), horário de Brasília"
+  - name: resposta_valsa_visita_medica
+    description: >
+      Fato de respostas do questionário "Valsa - Visita Médica"
+      (id_questionario = aa03d8cd-c278-477a-b938-759d89d64803).
+      Uma linha por resposta individual de pergunta — perguntas com
+      múltiplas respostas (ex: Pressão Arterial, onde sequencia_resposta
+      1 = sistólica e 2 = diastólica) geram várias linhas. Aplica
+      "mais novo ganha" por submissão completa (id_resposta): identifica
+      a entrega mais recente de cada response_id e mantém todas as
+      perguntas daquela entrega, preservando o histórico de cada
+      submissão distinta do mesmo paciente ao longo do tempo.
+    columns:
+      - name: id_resposta_item
+        description: "Identificador único da linha (resposta individual de uma pergunta dentro de uma submissão)"
+        tests:
+          - unique
+          - not_null
+      - name: id_resposta
+        description: "Identificador da submissão completa do questionário (QuestionnaireResponse). Um paciente pode ter múltiplas submissões ao longo do tempo."
+        tests:
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento, quando disponível (fato_atendimentos) — nem toda submissão desse questionário traz encounter"
+      - name: id_autor
+        description: "ID de quem respondeu/preencheu o questionário"
+      - name: tipo_autor
+        description: "Tipo do autor: Profissional ou Paciente"
+      - name: nome_autor
+        description: "Nome do autor, sem cargo/registro colado"
+      - name: id_questionario
+        description: "Referência ao questionário (dim_questionarios)"
+      - name: id_pergunta
+        description: "Identificador da pergunta (linkId), referencia dim_questionario_perguntas"
+      - name: texto_pergunta
+        description: "Texto da pergunta no momento da resposta. Inclui perguntas como 'Modalidade do atendimento:' e 'Tipo de visita:'"
+      - name: id_grupo
+        description: "Identificador do grupo ao qual a pergunta pertence, quando aplicável"
+      - name: nome_grupo
+        description: "Nome do grupo ao qual a pergunta pertence, quando aplicável (ex: STATUS, VISITA MÉDICA, CONDUTA E SÍNTESE DA EVOLUÇÃO CLÍNICA)"
+      - name: profundidade
+        description: "Nível de profundidade hierárquica da pergunta dentro da estrutura do questionário (0 = raiz)"
+      - name: sequencia_resposta
+        description: "Sequência da resposta dentro da mesma pergunta — maior que 1 indica resposta múltipla (ex: Pressão Arterial: 1 = sistólica, 2 = diastólica)"
+      - name: resposta_texto
+        description: "Resposta em texto livre, quando aplicável (ex: Evolução Clínica)"
+      - name: resposta_codigo
+        description: "Código da opção selecionada, para perguntas de escolha"
+      - name: resposta_escolha
+        description: "Texto da opção selecionada, para perguntas de escolha única ou múltipla"
+      - name: resposta_data
+        description: "Resposta do tipo data, quando aplicável"
+      - name: resposta_quantidade_valor
+        description: "Valor numérico, para perguntas do tipo quantidade (ex: pressão arterial em mmHg)"
+      - name: resposta_quantidade_unidade
+        description: "Unidade de medida associada ao valor de quantidade"
+      - name: resposta_inteiro
+        description: "Resposta numérica inteira, quando aplicável"
+      - name: resposta_decimal
+        description: "Resposta numérica decimal, quando aplicável (ex: frequência cardíaca, temperatura, SAT O²)"
+      - name: status
+        description: "Status da submissão no momento da entrega mais recente, traduzido (Concluído/Em andamento/Erro de registro)"
+      - name: data_resposta
+        description: "Data e hora em que a submissão foi registrada (authored), horário de Brasília"
