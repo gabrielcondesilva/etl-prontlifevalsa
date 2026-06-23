@@ -555,3 +555,76 @@ models:
         description: "Status da submissão no momento da entrega mais recente, traduzido (Concluído/Em andamento/Erro de registro)"
       - name: data_resposta
         description: "Data e hora em que a submissão foi registrada (authored), horário de Brasília"
+  - name: resposta_exame_medico_visita_domiciliar
+    description: >
+      Fato de respostas do questionário "Exame Médico - Visita
+      Domiciliar" (id_questionario = f44e2ffd-dabe-411e-b065-c52d842fbe81).
+      Cobre exame físico médico segmentado por sistema (Sinais Vitais,
+      Pele, Extremidades, Aparelho respiratório, Aparelho
+      cardiovascular, Abdômen, Dieta e Alimentação, Dispositivos,
+      Eliminações). Autores predominantemente médicos (CRM). Uma
+      linha por resposta individual de pergunta — perguntas como
+      "Ausculta cardíaca" e "Eliminação vesical - Aspecto" podem gerar
+      várias linhas (seleção múltipla). A pressão arterial aqui é
+      duas perguntas separadas: "Pressão arterial sistólica" (linkId
+      1734051746289) e "Pressão arterial diastólica" (linkId
+      1734051764126), cada uma em valueQuantity (mmHg). Aplica "mais
+      novo ganha" por submissão completa (id_resposta): identifica a
+      entrega mais recente de cada response_id e mantém todas as
+      perguntas daquela entrega. Em caso de múltiplas versões da
+      mesma pergunta na mesma entrega (ex: in-progress e completed
+      coexistindo), prioriza completed > in-progress > entered-in-error.
+    columns:
+      - name: id_resposta_item
+        description: "Identificador único da linha (resposta individual de uma pergunta dentro de uma submissão)"
+        tests:
+          - unique
+          - not_null
+      - name: id_resposta
+        description: "Identificador da submissão completa do questionário (QuestionnaireResponse). Um paciente pode ter múltiplas submissões ao longo do tempo."
+        tests:
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento onde o exame foi realizado (fato_atendimentos)"
+      - name: id_autor
+        description: "ID de quem respondeu/preencheu o questionário, predominantemente médicos"
+      - name: tipo_autor
+        description: "Tipo do autor: Profissional ou Paciente"
+      - name: nome_autor
+        description: "Nome do autor, sem cargo/registro colado"
+      - name: id_questionario
+        description: "Referência ao questionário (dim_questionarios)"
+      - name: id_pergunta
+        description: "Identificador da pergunta (linkId), formato timestamp numérico"
+      - name: texto_pergunta
+        description: "Texto da pergunta no momento da resposta (ex: Pressão arterial sistólica, Pressão arterial diastólica, Ausculta cardíaca)"
+      - name: id_grupo
+        description: "Identificador do grupo ao qual a pergunta pertence, quando aplicável"
+      - name: nome_grupo
+        description: "Nome do grupo ao qual a pergunta pertence, quando aplicável (ex: Sinais Vitais, Pele, Extremidades, Aparelho respiratório, Aparelho cardiovascular, Abdômen, Eliminações)"
+      - name: profundidade
+        description: "Nível de profundidade hierárquica da pergunta dentro da estrutura do questionário (0 = raiz)"
+      - name: sequencia_resposta
+        description: "Sequência da resposta dentro da mesma pergunta — maior que 1 indica seleção múltipla (ex: Ausculta cardíaca com múltiplos achados)"
+      - name: resposta_texto
+        description: "Resposta em texto livre, quando aplicável"
+      - name: resposta_codigo
+        description: "Código da opção selecionada, para perguntas de escolha"
+      - name: resposta_escolha
+        description: "Texto da opção selecionada, para perguntas de escolha única ou múltipla"
+      - name: resposta_data
+        description: "Resposta do tipo data, quando aplicável"
+      - name: resposta_quantidade_valor
+        description: "Valor numérico, para perguntas do tipo quantidade (ex: SatO2%, frequência cardíaca, pressão arterial sistólica/diastólica)"
+      - name: resposta_quantidade_unidade
+        description: "Unidade de medida associada ao valor de quantidade (ex: spO2, bpm, mmHg)"
+      - name: resposta_inteiro
+        description: "Resposta numérica inteira, quando aplicável"
+      - name: resposta_decimal
+        description: "Resposta numérica decimal, quando aplicável"
+      - name: status
+        description: "Status da submissão no momento da entrega mais recente, traduzido (Concluído/Em andamento/Erro de registro)"
+      - name: data_resposta
+        description: "Data e hora em que a submissão foi registrada (authored), horário de Brasília"
