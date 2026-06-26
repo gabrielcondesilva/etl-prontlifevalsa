@@ -1180,3 +1180,63 @@ models:
           combination_of_columns:
             - id_questionario
             - id_pergunta
+  - name: dim_carteira_saude_programas
+    description: >
+      Dimensão de convênios/planos de saúde, restrita a beneficiários
+      vinculados a algum programa de monitoramento (fato_programas).
+      Diferente de dim_carteira_saude, a "mais novo ganha" é particionada
+      por número de carteira tratado + paciente beneficiário (não por
+      coverage_id isolado), preservando o histórico de trocas de carteira
+      que ocorrem quando o registro original é editado em vez de
+      inativado e recriado. O número de carteira do dependente passa por
+      tratamento (remoção de zero à esquerda, espaços, aspas, tabulação,
+      concatenação de dois valores na mesma célula, descarte de CPF) para
+      viabilizar o relacionamento com a planilha de hospitalizações
+      (fato_hospitalizados), cuja MATRICULA é preenchida manualmente.
+      Mesmo após o tratamento, restam casos residuais de ambiguidade
+      (mesmo número de carteira para pacientes diferentes — observado em
+      números de contrato corporativo compartilhados e em placeholders
+      onde o id_paciente é usado como carteira provisória); esses casos
+      devem ser identificados e excluídos antes do relacionamento final
+      no modelo de BI.
+    columns:
+      - name: id_carteira_saude
+        description: "Identificador do convênio de origem (coverage_id) — não é único nesta tabela, pois o mesmo coverage_id pode gerar múltiplas linhas quando o número de carteira muda ao longo do tempo"
+
+      - name: id_paciente_titular
+        description: "Referência ao paciente titular do plano (dim_pacientes)"
+
+      - name: id_paciente_beneficiario
+        description: "Referência ao paciente beneficiário/usuário do plano (dim_pacientes) — todo valor presente nesta tabela está vinculado a algum episódio em fato_programas"
+
+      - name: nome_operadora
+        description: "Nome da operadora/seguradora do plano de saúde"
+
+      - name: nome_plano
+        description: "Nome do plano de saúde"
+
+      - name: numero_carteira_dependente
+        description: "Número da carteirinha do dependente/beneficiário, como recebido da fonte, sem tratamento"
+
+      - name: numero_carteira_dependente_tratado
+        description: >
+          Número da carteirinha do dependente após tratamento: remoção de
+          espaços/aspas/tabulação, corte de concatenação de dois valores
+          (separados por "/" ou " - "), descarte de valores em formato de
+          CPF, e remoção de zeros à esquerda quando o valor é puramente
+          numérico. Valores não puramente numéricos e não reconhecidos
+          como ruído (ex: códigos alfanuméricos de operadora) são
+          mantidos sem alteração. É a coluna usada para relacionamento
+          com fato_hospitalizados.MATRICULA.
+
+      - name: numero_carteira_titular
+        description: "Número da carteirinha do titular do plano, como recebido da fonte, sem tratamento"
+
+      - name: status
+        description: "Status do convênio, traduzido para português (Ativo/Cancelado/Rascunho/Erro de registro)"
+
+      - name: data_inicio_vigencia
+        description: "Data de início da vigência do plano"
+
+      - name: data_fim_vigencia
+        description: "Data de fim da vigência do plano"
