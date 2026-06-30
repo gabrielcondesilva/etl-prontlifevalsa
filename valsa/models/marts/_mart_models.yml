@@ -68,3 +68,36 @@ models:
         description: "Flag: true quando o resultado existe só em texto, sem valor numérico"
       - name: valor_discrepante
         description: "Flag: true quando o valor numérico está fora da faixa fisiologicamente plausível"
+  - name: questionario_evento_adverso
+    description: >
+      Mart pivotada do questionário "Evento Adverso", derivada de
+      resposta_evento_adverso. Uma linha por submissão (id_resposta),
+      com as principais perguntas transformadas em colunas para
+      facilitar consumo direto em ferramentas de análise (Power BI).
+      Não substitui o fato granular — para perguntas não cobertas
+      aqui, ou para auditoria completa, consultar diretamente
+      resposta_evento_adverso.
+    columns:
+      - name: id_resposta
+        description: "Identificador da submissão completa do questionário (QuestionnaireResponse). Chave primária da mart."
+        tests:
+          - unique
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento onde o evento foi registrado (fato_atendimentos)"
+      - name: nome_autor
+        description: "Nome do profissional que registrou a submissão, sem cargo/registro colado"
+      - name: data_resposta
+        description: "Data e hora em que a submissão foi registrada (authored), horário de Brasília"
+      - name: status
+        description: "Status da submissão, traduzido (Concluído/Em andamento/Erro de registro)"
+      - name: ocorrencia_evento_adverso
+        description: "Resposta à pergunta 'Ocorrência de evento adverso?' (Sim/Não)"
+      - name: natureza_evento
+        description: "Resposta à pergunta 'Natureza do evento' (ex: Queda, Infecção), preenchida apenas quando ocorrencia_evento_adverso = Sim"
+      - name: ciencia_notificacao
+        description: "Resposta à pergunta sobre ciência da necessidade de notificação à ANVISA e ao Núcleo de Segurança do Paciente (NSP)"
+      - name: observacao_outros
+        description: "Texto livre do campo 'Outros' — usado tanto para detalhar o evento adverso quanto para registros gerais de monitoramento/contato"
