@@ -628,3 +628,70 @@ models:
         description: "Status da submissão no momento da entrega mais recente, traduzido (Concluído/Em andamento/Erro de registro)"
       - name: data_resposta
         description: "Data e hora em que a submissão foi registrada (authored), horário de Brasília"
+  - name: resposta_evento_adverso
+    description: >
+      Fato de respostas do questionário "Evento Adverso" (id_questionario
+      = 875f6174-16f2-44bc-aa15-e5b824fda095). Questionário enxuto para
+      registro de eventos adversos com pacientes (ex: quedas, infecções),
+      incluindo natureza do evento, ciência de notificação à ANVISA e ao
+      Núcleo de Segurança do Paciente (NSP), e descrição livre do
+      ocorrido. Uma linha por resposta individual de pergunta. Aplica
+      "mais novo ganha" por submissão completa (id_resposta): identifica
+      a entrega mais recente de cada response_id e mantém todas as
+      perguntas daquela entrega. Em caso de múltiplas versões da mesma
+      pergunta na mesma entrega (ex: in-progress e completed
+      coexistindo), prioriza completed > in-progress > entered-in-error.
+    columns:
+      - name: id_resposta_item
+        description: "Identificador único da linha (resposta individual de uma pergunta dentro de uma submissão)"
+        tests:
+          - unique
+          - not_null
+      - name: id_resposta
+        description: "Identificador da submissão completa do questionário (QuestionnaireResponse). Um paciente pode ter múltiplas submissões ao longo do tempo."
+        tests:
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento onde o evento foi registrado (fato_atendimentos)"
+      - name: id_autor
+        description: "ID de quem respondeu/preencheu o questionário"
+      - name: tipo_autor
+        description: "Tipo do autor: Profissional ou Paciente"
+      - name: nome_autor
+        description: "Nome do autor, sem cargo/registro colado"
+      - name: id_questionario
+        description: "Referência ao questionário (dim_questionarios)"
+      - name: id_pergunta
+        description: "Identificador da pergunta (linkId), formato timestamp numérico"
+      - name: texto_pergunta
+        description: "Texto da pergunta no momento da resposta (ex: Ocorrência de evento adverso?, Natureza do evento)"
+      - name: id_grupo
+        description: "Identificador do grupo ao qual a pergunta pertence, quando aplicável"
+      - name: nome_grupo
+        description: "Nome do grupo ao qual a pergunta pertence, quando aplicável (ex: Evento Adverso)"
+      - name: profundidade
+        description: "Nível de profundidade hierárquica da pergunta dentro da estrutura do questionário (0 = raiz)"
+      - name: sequencia_resposta
+        description: "Sequência da resposta dentro da mesma pergunta — maior que 1 indica seleção múltipla"
+      - name: resposta_texto
+        description: "Resposta em texto livre, quando aplicável (ex: descrição do evento no campo Outros)"
+      - name: resposta_codigo
+        description: "Código da opção selecionada, para perguntas de escolha"
+      - name: resposta_escolha
+        description: "Texto da opção selecionada, para perguntas de escolha única ou múltipla (ex: Natureza do evento: Queda, Infecção)"
+      - name: resposta_data
+        description: "Resposta do tipo data, quando aplicável"
+      - name: resposta_quantidade_valor
+        description: "Valor numérico, para perguntas do tipo quantidade, quando aplicável"
+      - name: resposta_quantidade_unidade
+        description: "Unidade de medida associada ao valor de quantidade"
+      - name: resposta_inteiro
+        description: "Resposta numérica inteira, quando aplicável"
+      - name: resposta_decimal
+        description: "Resposta numérica decimal, quando aplicável"
+      - name: status
+        description: "Status da submissão no momento da entrega mais recente, traduzido (Concluído/Em andamento/Erro de registro)"
+      - name: data_resposta
+        description: "Data e hora em que a submissão foi registrada (authored), horário de Brasília"

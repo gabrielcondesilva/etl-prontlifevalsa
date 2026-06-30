@@ -37,7 +37,9 @@ numerado_negocio as (
         *,
         row_number() over (
             partition by patient_id, category_display_norm, period_start
-            order by delivery_date desc
+            order by
+                delivery_date desc,
+                case when status = 'active' then 0 else 1 end
         ) as rn_negocio
     from mais_recente_episodio
 ),
@@ -70,6 +72,7 @@ programas_validos as (
     select *
     from classificado
     where coalesce(ja_tinha_ativo_anterior, 0) = 0
+      and category_display_norm is not null
 ),
 
 final as (
