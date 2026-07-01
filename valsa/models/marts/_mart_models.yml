@@ -250,3 +250,73 @@ models:
         description: "Motivo clínico descrito para o encaminhamento"
       - name: data_solicitacao
         description: "Data em que o encaminhamento foi solicitado"
+  - name: vacinas
+    description: >
+      Mart que consolida os registros de vacinação provenientes do
+      questionário VALSA - Visita Enfermagem Rotina. Cada linha representa
+      uma vacina registrada para um paciente, padronizando os nomes das
+      vacinas e preservando a data de administração, permitindo análises
+      temporais e acompanhamento da cobertura vacinal.
+
+    columns:
+      - name: id_resposta
+        description: "Identificador da submissão do questionário."
+        tests:
+          - not_null
+
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)."
+        tests:
+          - not_null
+
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos), quando existente."
+
+      - name: vacina
+        description: >
+          Nome padronizado da vacina registrada. Atualmente contempla
+          Influenza e Pneumocócicas.
+
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - "Influenza"
+                - "Pneumocócicas"
+
+      - name: data_administracao
+        description: >
+          Data em que a vacina foi administrada. Utilizada como referência
+          para os indicadores mensais e anuais de vacinação.
+
+        tests:
+          - not_null
+
+      - name: administrada_valsa
+        description: >
+          Indica se a vacina foi administrada pela equipe da VALSA.
+
+      - name: vacinas_em_dia
+        description: >
+          Resposta à pergunta "Vacinas em dia?".
+
+      - name: calendario_vacinal_atualizado
+        description: >
+          Indica se o paciente possui o calendário vacinal atualizado.
+
+      - name: data_resposta
+        description: >
+          Data e hora da submissão do questionário.
+
+        tests:
+          - not_null
+
+      - name: status
+        description: >
+          Status da submissão do questionário.
+
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - "Concluído"
