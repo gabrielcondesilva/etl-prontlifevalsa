@@ -217,3 +217,36 @@ models:
 
       - name: ja_trata_lesao
         description: "Indica se o paciente já realiza tratamento para a lesão."
+  - name: encaminhamentos
+    description: >
+      Mart de encaminhamentos médicos para consumo no Power BI.
+      Deriva de fato_encaminhamento enriquecida com nome e
+      especialidade do profissional solicitante (dim_profissionais).
+      Não inclui CIDs — o relacionamento com diagnósticos deve ser
+      feito no Power BI via id_atendimento com fato_diagnosticos,
+      para evitar multiplicação de linhas por múltiplos CIDs por
+      atendimento.
+    columns:
+      - name: id_encaminhamento
+        description: "Identificador único do encaminhamento"
+        tests:
+          - unique
+          - not_null
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)"
+      - name: id_atendimento
+        description: "Referência ao atendimento onde o encaminhamento foi solicitado — usar para relacionar com fato_diagnosticos no Power BI"
+      - name: especialidade_encaminhada
+        description: "Especialidade para a qual o paciente foi encaminhado"
+      - name: id_solicitante
+        description: "ID do profissional que solicitou o encaminhamento (dim_profissionais)"
+      - name: nome_solicitante
+        description: "Nome completo do profissional solicitante"
+      - name: especialidade_solicitante
+        description: "Especialidade do profissional que fez a solicitação"
+      - name: status_encaminhamento
+        description: "Status atual do encaminhamento"
+      - name: motivo_encaminhamento
+        description: "Motivo clínico descrito para o encaminhamento"
+      - name: data_solicitacao
+        description: "Data em que o encaminhamento foi solicitado"
