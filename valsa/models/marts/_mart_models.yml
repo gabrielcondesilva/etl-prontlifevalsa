@@ -101,3 +101,119 @@ models:
         description: "Resposta à pergunta sobre ciência da necessidade de notificação à ANVISA e ao Núcleo de Segurança do Paciente (NSP)"
       - name: observacao_outros
         description: "Texto livre do campo 'Outros' — usado tanto para detalhar o evento adverso quanto para registros gerais de monitoramento/contato"
+  - name: pressao_arterial
+    description: >
+      Mart que consolida todas as aferições de pressão arterial provenientes
+      dos questionários clínicos e do exame físico. Cada linha representa
+      uma aferição de pressão arterial, padronizada em uma única estrutura
+      para consumo analítico no Power BI, preservando a origem do registro.
+
+    columns:
+      - name: id_resposta
+        description: "Identificador da resposta do questionário ou da medição do exame físico."
+        tests:
+          - not_null
+
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)."
+        tests:
+          - not_null
+
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos), quando existente."
+
+      - name: pressao_sistolica
+        description: >
+          Valor da pressão arterial sistólica (mmHg), padronizado como inteiro.
+          Caso os valores de sistólica e diastólica estejam invertidos na origem,
+          a mart corrige automaticamente mantendo o maior valor como sistólica.
+        tests:
+          - not_null
+
+      - name: pressao_diastolica
+        description: >
+          Valor da pressão arterial diastólica (mmHg), padronizado como inteiro.
+          Caso os valores de sistólica e diastólica estejam invertidos na origem,
+          a mart corrige automaticamente mantendo o menor valor como diastólica.
+        tests:
+          - not_null
+
+      - name: data_afericao
+        description: "Data e hora da aferição da pressão arterial."
+        tests:
+          - not_null
+
+      - name: origem
+        description: >
+          Origem da aferição de pressão arterial, indicando o questionário
+          clínico ou exame físico de onde o registro foi obtido.
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - "APS - Acolhimento Enfermagem"
+                - "Avaliação Breve de Risco à Saúde"
+                - "Exame Médico - Visita Domiciliar"
+                - "VALSA - 1ª Visita Enfermagem"
+                - "VALSA - Consulta Médica LC"
+                - "VALSA - Intercorrência"
+                - "VALSA - Monitoramento de Saúde"
+                - "VALSA - Visita Enfermagem Rotina"
+                - "VALSA - Visita Médica"
+                - "Exame Físico"
+  - name: lesoes_visita_enfermagem
+    description: >
+      Mart que consolida as informações sobre lesões e feridas registradas
+      no questionário VALSA - Visita Enfermagem Rotina. Cada linha representa
+      uma submissão do questionário (id_resposta), com as principais perguntas
+      relacionadas às lesões transformadas em colunas para facilitar o consumo
+      analítico no Power BI.
+
+    columns:
+      - name: id_resposta
+        description: "Identificador único da submissão do questionário."
+        tests:
+          - not_null
+
+      - name: id_paciente
+        description: "Referência ao paciente (dim_pacientes)."
+        tests:
+          - not_null
+
+      - name: id_atendimento
+        description: "Referência ao atendimento (fato_atendimentos), quando existente."
+
+      - name: data_resposta
+        description: "Data e hora em que a resposta do questionário foi registrada."
+        tests:
+          - not_null
+
+      - name: status
+        description: "Status da submissão do questionário."
+
+      - name: apresenta_lesao
+        description: "Indica se o paciente apresenta alguma lesão ou ferida."
+
+      - name: tipo_lesao
+        description: "Tipo da lesão ou ferida informada."
+
+      - name: descricao_lesao
+        description: "Descrição livre da lesão."
+
+      - name: regiao_lesao
+        description: "Descrição da região anatômica onde a lesão está localizada."
+
+      - name: grau_lesao
+        description: "Grau da lesão informado no questionário."
+
+      - name: extensao_lesao
+        description: "Extensão da lesão."
+
+      - name: leito_lesao
+        description: "Características do leito da lesão."
+
+      - name: evolucao_lesao
+        description: "Descrição da evolução da lesão."
+
+      - name: ja_trata_lesao
+        description: "Indica se o paciente já realiza tratamento para a lesão."
